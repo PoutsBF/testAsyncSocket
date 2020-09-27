@@ -48,7 +48,6 @@ void CValeurs::envoie(uint32_t id)
         if (ws->count() != 0)
         {
             ws->textAll(strbuffer);
-            //            globalClient->text(output);
         }
     }
     else
@@ -56,7 +55,6 @@ void CValeurs::envoie(uint32_t id)
         if ((id - 1) <= ws->count())
         {
             ws->text(id, strbuffer);
-            //            globalClient->text(output);
         }
     }
 }
