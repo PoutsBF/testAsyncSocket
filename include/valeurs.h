@@ -15,6 +15,6 @@ public:
     void miseAJour(float temperature, float humidite, char *timestamp);
 
 private:
-}
+};  
 
 #endif
