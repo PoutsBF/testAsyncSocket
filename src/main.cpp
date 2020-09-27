@@ -12,6 +12,8 @@
 
 #include <RTClib.h>
 
+#define DEBUG
+
 #include "config.h"
 #include "WifiConfig.h"
 

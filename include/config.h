@@ -10,6 +10,12 @@
 
 //#include <RTClib.h>
 
+#ifdef DEBUG
+#define DBG     
+#else
+#define DBG     // --- DEBUG 
+#endif
+
 extern char daysOfTheWeek[7][9];
 
 const uint8_t led = 13;

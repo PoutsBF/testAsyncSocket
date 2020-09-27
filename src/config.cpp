@@ -16,8 +16,8 @@
 #include <NtpClient.h>
 
 #include <RTClib.h>
-
 #include "DHTesp.h"
+#include "valeurs.h"
 
 #include "config.h"
 
@@ -31,7 +31,8 @@ SemaphoreHandle_t mutex_VariablesHeure;
 const uint8_t DHTPIN = 21;            // Digital pin connected to the DHT sensor
 DHTesp dht;
 
-#define DEBUG
+CValeurs valeurs;
+
 #ifdef DEBUG
 const TickType_t xdelai_mesure = (1 * 60 * 1000) / portTICK_PERIOD_MS;        // 1mn x 60s x 1000ms
 #else
@@ -75,6 +76,8 @@ void setup_DHT(void)
         break;
     }
 
+    valeurs.setup(&ws);
+
     xTaskCreatePinnedToCore(
         onTimer,              /* Task function. */
         "timer Task",         /* name of task. */
@@ -83,7 +86,6 @@ void setup_DHT(void)
         configMAX_PRIORITIES, /* priority of the task */
         &id_onTimer,          /* Task handle to keep track of created task */
         1);                   /* sur CPU1 */
-
 }
 
 void setup_RTC()
@@ -235,19 +237,17 @@ void onTimer(void *pvParameters)
             f.close();
         }
 
-        snprintf(strbuffer, 64, "{\"stamp\":\"%04d-%02d-%02dT%02d:%02d:%02d\",\"temp\":%.2f,\"hydr\":%.2f}",
+        snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d",
                  now.year(), now.month(), now.day(),
-                 now.hour(), now.minute(), now.second(),
-                 mesure_total_t,
-                 mesure_total_h);
-        Serial.println(strbuffer);
+                 now.hour(), now.minute(), now.second());
+DBG        Serial.println(strbuffer);
 
-        //        if (globalClient != NULL && globalClient->status() == WS_CONNECTED)
-        if (ws.count() != 0)
-        {
-            ws.textAll(strbuffer);
-            //            globalClient->text(output);
-        }
+        valeurs.miseAJour(mesure_total_t, mesure_total_h, strbuffer);
+// if (ws.count() != 0)
+// {
+//     ws.textAll(strbuffer);
+//     //            globalClient->text(output);
+//         }
 
         vTaskDelay(xdelai_mesure);
     }
