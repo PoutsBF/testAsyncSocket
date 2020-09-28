@@ -1,6 +1,3 @@
-#ifndef CONFIG_H
-#define CONFIG_H
-
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -8,7 +5,11 @@
 #include <freertos/task.h>
 #include <freertos/timers.h>
 
+#define DEBUG
+
 //#include <RTClib.h>
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #ifdef DEBUG
 #define DBG     

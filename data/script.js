@@ -33,19 +33,21 @@ connection.onmessage = function (event)
         console.log(event.data);
     }
     var text = "";
-    var time = new Date(msg.stamp);
-    var timeStr = time.toLocaleTimeString();
-
-    text = "<b>donnée à " + timeStr + "</b><br>";
-    text += "<b>température " + msg.temp + " °C</b><br>";
-    text += "<b>hygrométrie " + msg.hydr + " %HR</b><br>";
-
-    document.jauge.series[0].setData([msg.temp], true);
-    document.jauge.series[1].setData([msg.hydr], true);
-
-    if (text.length)
+    if (typeof msg.stamp != 'undefined')
     {
-        document.getElementById("display").innerHTML = text;
+        var time = new Date(msg.stamp);
+        var timeStr = time.toLocaleTimeString();
+
+        text = "<b>donnée à " + timeStr + "</b><br>";
+        text += "<b>température " + msg.temp + " °C</b><br>";
+        text += "<b>hygrométrie " + msg.hydr + " %HR</b><br>";
+
+        document.jauge.series[0].setData([msg.temp], true);
+        document.jauge.series[1].setData([msg.hydr], true);
+
+        if (text.length) {
+            document.getElementById("display").innerHTML = text;
+        }
     }
     console.log('Server: ', event.data);
 };

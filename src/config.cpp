@@ -36,8 +36,9 @@ CValeurs valeurs;
 #ifdef DEBUG
 const TickType_t xdelai_mesure = (1 * 60 * 1000) / portTICK_PERIOD_MS;        // 1mn x 60s x 1000ms
 #else
-const TickType_t xdelai_mesure = (15 * 60 * 1000);        // 15mn x 60s x 1000ms
+//const TickType_t xdelai_mesure = (15 * 60 * 1000);        // 15mn x 60s x 1000ms
 #endif
+
 const TickType_t mesures_delai = (5 * 1000) / portTICK_PERIOD_MS;
 const uint8_t mesures_nb = 3;
 

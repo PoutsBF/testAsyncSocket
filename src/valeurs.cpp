@@ -52,9 +52,6 @@ void CValeurs::envoie(uint32_t id)
     }
     else
     {
-        if ((id - 1) <= ws->count())
-        {
-            ws->text(id, strbuffer);
-        }
+        ws->text(id, strbuffer);
     }
 }

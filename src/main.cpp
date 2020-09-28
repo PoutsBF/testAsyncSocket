@@ -1,5 +1,3 @@
-#define DEBUG
-
 #include <ArduinoOTA.h>
 
 #include <TimeLib.h>

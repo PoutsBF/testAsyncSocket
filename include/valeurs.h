@@ -5,9 +5,6 @@ Objet contenant les valeurs en TR, avec les méthodes de
 - mise à jour
 - renvoie
 -----------------------------------------------------------------------------*/
-#ifndef VALEURS_H
-#define VALEURS_H
-
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -24,6 +21,8 @@ Objet contenant les valeurs en TR, avec les méthodes de
 
 #include "config.h"
 
+#ifndef VALEURS_H
+#define VALEURS_H
 
 class CValeurs
 {
