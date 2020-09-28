@@ -1,3 +1,5 @@
+#define DEBUG
+
 #include <ArduinoOTA.h>
 
 #include <TimeLib.h>
@@ -12,8 +14,7 @@
 
 #include <RTClib.h>
 
-#define DEBUG
-
+#include "valeurs.h"
 #include "config.h"
 #include "WifiConfig.h"
 
@@ -24,12 +25,15 @@ AsyncEventSource events("/events");
 
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
+    extern CValeurs valeurs;
+
     if (type == WS_EVT_CONNECT)
     {
         char texte[64];
         snprintf(texte, 64, "{\"Hello Client\": \"%u\"}", client->id());
         Serial.printf("ws[%s][%u] connect\n", server->url(), client->id());
         client->printf(texte);
+        valeurs.envoie(client->id());
         client->ping();
     }
     else if (type == WS_EVT_DISCONNECT)
