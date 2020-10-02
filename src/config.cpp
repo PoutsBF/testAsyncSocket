@@ -16,7 +16,9 @@
 #include <NtpClient.h>
 
 #include <RTClib.h>
-#include "DHTesp.h"
+//#include "DHTesp.h"
+#include <Adafruit_Sensor.h>
+#include <bme680.h>
 #include "valeurs.h"
 
 #include "config.h"
@@ -28,8 +30,10 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 2 * 3600);
 // MUTEX pour les accès aux variables d'heure ---
 SemaphoreHandle_t mutex_VariablesHeure;
 
-const uint8_t DHTPIN = 21;            // Digital pin connected to the DHT sensor
-DHTesp dht;
+//const uint8_t DHTPIN = 21;            // Digital pin connected to the DHT sensor
+//DHTesp dht;
+
+Adafruit_BME680 bme;        // I2C
 
 CValeurs valeurs;
 
