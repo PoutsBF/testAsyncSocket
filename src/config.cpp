@@ -18,7 +18,7 @@
 #include <RTClib.h>
 //#include "DHTesp.h"
 #include <Adafruit_Sensor.h>
-#include <bme680.h>
+#include <Adafruit_BME680.h>
 #include "valeurs.h"
 
 #include "config.h"
@@ -30,8 +30,7 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 2 * 3600);
 // MUTEX pour les accès aux variables d'heure ---
 SemaphoreHandle_t mutex_VariablesHeure;
 
-//const uint8_t DHTPIN = 21;            // Digital pin connected to the DHT sensor
-//DHTesp dht;
+#define SEALEVELPRESSURE_HPA (1013.25)
 
 Adafruit_BME680 bme;        // I2C
 
@@ -40,7 +39,7 @@ CValeurs valeurs;
 #ifdef DEBUG
 const TickType_t xdelai_mesure = (1 * 60 * 1000) / portTICK_PERIOD_MS;        // 1mn x 60s x 1000ms
 #else
-//const TickType_t xdelai_mesure = (15 * 60 * 1000);        // 15mn x 60s x 1000ms
+const TickType_t xdelai_mesure = (15 * 60 * 1000);        // 15mn x 60s x 1000ms
 #endif
 
 const TickType_t mesures_delai = (5 * 1000) / portTICK_PERIOD_MS;
@@ -59,27 +58,20 @@ extern AsyncWebSocket ws;
 
 void setup_DHT(void)
 {
-    Serial.print("\nConfiguration du capteur DHT... ");
-    dht.setup(DHTPIN, DHTesp::DHT11);
+    Serial.print("\n---- Configuration du capteur BME680 ---- \n");
 
-    switch (dht.getStatus())
+    //  Démarrage du capteur
+    if (!bme.begin())
     {
-        case DHTesp::ERROR_NONE:
-        {
-            Serial.println("DHT ok !");
-        }
-        break;
-        case DHTesp::ERROR_CHECKSUM:
-        {
-            Serial.println("DHT : erreur sur le checksum");
-        }
-        break;
-        case DHTesp::ERROR_TIMEOUT:
-        {
-            Serial.println("DHT : erreur de timeout");
-        }
-        break;
+        Serial.println(F("Could not find a valid BME680 sensor, check wiring!"));
     }
+
+    //    configuration du capteur (sur échantillonage, filtres)
+    bme.setTemperatureOversampling(BME680_OS_8X);   
+    bme.setHumidityOversampling(BME680_OS_2X);
+    bme.setPressureOversampling(BME680_OS_4X);
+    bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
+    bme.setGasHeater(320, 150);        // 320*C for 150 ms
 
     valeurs.setup(&ws);
 
@@ -91,11 +83,13 @@ void setup_DHT(void)
         configMAX_PRIORITIES, /* priority of the task */
         &id_onTimer,          /* Task handle to keep track of created task */
         1);                   /* sur CPU1 */
+
+    Serial.print("\n---- fin de la configuration du capteur BME680 ---- \n");
 }
 
 void setup_RTC()
 {
-    Serial.println("---- config RTC ----");
+    Serial.println("\n---- config RTC ----");
     if(rtc.begin())
     {
         Serial.println("RTC ok, démarrage...");
@@ -140,8 +134,6 @@ void setup_RTC()
         2,             /* priority of the task */
         &id_tache_ntc, /* Task handle to keep track of created task */
         1);            /* sur CPU1 */
-
-
 }
 
 // ****************************************************************************
@@ -172,10 +164,8 @@ void tache_ntc(void *pvParameters)
             {
                 Serial.print(" heure ok ! - ");
             }
-            
         }
-
-        Serial.println("fin");
+        Serial.println("\n---- fin configuration NTC ----");
         vTaskDelay(xDelay);
     }
 }
@@ -190,70 +180,68 @@ void onTimer(void *pvParameters)
     
     for (;;)
     {
-        float mesure_total_t = 0.0;
-        float mesure_total_h = 0.0;
-        uint8_t mesures_t = 1 << mesures_nb;
-        uint8_t mesures_h = 1 << mesures_nb;
-
-        for (uint8_t i = 0; i < (1 << mesures_nb); i++)
+//                portENTER_CRITICAL(&my_mutex);
+        unsigned long endTime = bme.beginReading();
+//                portEXIT_CRITICAL(&my_mutex);
+        if (endTime != 0)
         {
-            portENTER_CRITICAL(&my_mutex);
-            TempAndHumidity newValues = dht.getTempAndHumidity();
-            portEXIT_CRITICAL(&my_mutex);
-            // Check if any reads failed and exit early (to try again).
-            if (dht.getStatus() != 0)
+DBG            Serial.print(F("Reading started at "));
+DBG            Serial.print(millis());
+DBG            Serial.print(F(" and will finish at "));
+DBG            Serial.println(endTime);
+
+            if (bme.endReading())
             {
-                Serial.printf("lecture %d, DHT11 error status: %s\n", i, dht.getStatusString());
-                mesures_t--;
-                mesures_h--;
+                float mesure_t = 0.0;
+                float mesure_h = 0.0;
+
+                // Mise en sommeil en attendant la fin de la lecture
+                if (endTime > millis())
+                    vTaskDelay(endTime - millis());        // cas classique de différence de temps
+                else
+                    vTaskDelay(millis() - endTime);        // Débordement du 'millis' : on double le débordement...
+
+                mesure_t = bme.temperature;
+                mesure_h = bme.humidity;
+
+                //    portENTER_CRITICAL(&mux);
+                DateTime now = rtc.now();
+                //    portEXIT_CRITICAL(&mux);
+
+                char strbuffer[64];
+                snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f\n",
+                         now.year(), now.month(), now.day(),
+                         now.hour(), now.minute(), now.second(),
+                         mesure_t,
+                         mesure_h);
+
+                File f = SPIFFS.open("/temperature.csv", "a+");
+                if (!f)
+                {
+                    Serial.println("erreur ouverture fichier!");
+                }
+                else
+                {
+                    f.print(strbuffer);
+                    f.close();
+                }
+
+                snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d",
+                         now.year(), now.month(), now.day(),
+                         now.hour(), now.minute(), now.second());
+DBG             Serial.println(strbuffer);
+
+                valeurs.miseAJour(mesure_t, mesure_h, strbuffer);
             }
             else
             {
-                mesure_total_t += newValues.temperature;
-                mesure_total_h += newValues.humidity;
+                Serial.println(F("Failed to complete reading :("));
             }
-            vTaskDelay(mesures_delai);
-        }
-
-        if (mesures_t)
-            mesure_total_t /= mesures_t;
-        if (mesures_h)
-            mesure_total_h /= mesures_h;
-
-        //    portENTER_CRITICAL(&mux);
-        DateTime now = rtc.now();
-        //    portEXIT_CRITICAL(&mux);
-
-        char strbuffer[64];
-        snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f\n",
-                 now.year(), now.month(), now.day(),
-                 now.hour(), now.minute(), now.second(),
-                 mesure_total_t,
-                 mesure_total_h);
-
-        File f = SPIFFS.open("/temperature.csv", "a+");
-        if (!f)
-        {
-            Serial.println("erreur ouverture fichier!");
         }
         else
         {
-            f.print(strbuffer);
-            f.close();
+            Serial.println(F("Failed to begin reading :("));
         }
-
-        snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d",
-                 now.year(), now.month(), now.day(),
-                 now.hour(), now.minute(), now.second());
-DBG        Serial.println(strbuffer);
-
-        valeurs.miseAJour(mesure_total_t, mesure_total_h, strbuffer);
-// if (ws.count() != 0)
-// {
-//     ws.textAll(strbuffer);
-//     //            globalClient->text(output);
-//         }
-
         vTaskDelay(xdelai_mesure);
     }
 }

@@ -19,7 +19,33 @@ connection.onerror = function (error)
 {
     console.log('WebSocket Error ', error);
 };
-
+/*
+connection.onclose = function (event)
+{
+    switch (event.code)
+    {
+        case 1000: console.log("Normal Closure"); break;
+        case 1001: console.log("Going Away"); break;
+        case 1002: console.log("Protocol Error"); break;
+        case 1003: console.log("Unsupported Data"); break;
+        case 1005: console.log("No Status Received"); break;
+        case 1006: console.log("Abnormal Closure"); break;
+        case 1007: console.log("Invalid frame payload data"); break;
+        case 1008: console.log("Policy Violation"); break;
+        case 1009: console.log("Message too big"); break;
+        case 1010: console.log("Missing Extension"); break;
+        case 1011: console.log("Internal Error"); break;
+        case 1012: console.log("Service Restart"); break;
+        case 1013: console.log("Try Again Later"); break;
+        case 1014: console.log("Bad Gateway"); break;
+        case 1015: console.log("TLS Handshake"); break;
+        default: console.log("fin de web socket autre");
+    }
+    if (event.wasClean)
+        console.log("arrêt nettoyé");
+    else
+        console.log("arrêt non nettoyé");
+}*/
 
 connection.onmessage = function (event)
 {

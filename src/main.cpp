@@ -16,7 +16,6 @@
 #include "config.h"
 #include "WifiConfig.h"
 
-// SKETCH BEGIN
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 AsyncEventSource events("/events");
@@ -27,12 +26,12 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 
     if (type == WS_EVT_CONNECT)
     {
-        char texte[64];
-        snprintf(texte, 64, "{\"Hello Client\": \"%u\"}", client->id());
+DBG     char texte[64];
+DBG     snprintf(texte, 64, "{\"Hello Client\": \"%u\"}", client->id());
         Serial.printf("ws[%s][%u] connect\n", server->url(), client->id());
-        client->printf(texte);
+DBG     client->printf(texte);
         valeurs.envoie(client->id());
-        client->ping();
+DBG     client->ping();
     }
     else if (type == WS_EVT_DISCONNECT)
     {
@@ -74,9 +73,9 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
             Serial.printf("%s\n", msg.c_str());
 
             if (info->opcode == WS_TEXT)
-                client->text("{\"message\":\"I got your text message\"}");
+DBG                client->text("{\"message\":\"I got your text message\"}");
             else
-                client->binary("{\"message\":\"I got your binary message\"}");
+DBG                client->binary("{\"message\":\"I got your binary message\"}");
         }
         else
         {
@@ -115,9 +114,9 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
                 {
                     Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT) ? "text" : "binary");
                     if (info->message_opcode == WS_TEXT)
-                        client->text("{\"message\":\"I got your text message\"}");
+DBG                     client->text("{\"message\":\"I got your text message\"}");
                     else
-                        client->binary("{\"message\":\"I got your binary message\"}");
+DBG                     client->binary("{\"message\":\"I got your binary message\"}");
                 }
             }
         }
@@ -134,6 +133,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.setDebugOutput(true);
+    Serial.println("------- Stéphane Lepoutère 2020 -- Pemperanda -- début de la config'");
 
     WiFi.mode(WIFI_AP_STA);
     WiFi.softAP(hostName);
@@ -145,6 +145,8 @@ void setup()
         delay(1000);
         WiFi.begin(ssid, password);
     }
+    Serial.print("adresse IP : ");
+    Serial.println(WiFi.localIP());
 
     //Send OTA events to the browser
     ArduinoOTA.onStart([]() { events.send("Update Start", "ota"); });
@@ -171,8 +173,25 @@ void setup()
 
     MDNS.addService("http", "tcp", 80);
 
-    SPIFFS.begin();
+    //  Configuration du gestionnaire de fichiers SPIFFS -----------
+    if (!SPIFFS.begin())
+    {
+        Serial.println("Erreur initialisation SPIFFS");
+    }
 
+    /* Détection des fichiers présents sur l'Esp32 */
+    File root = SPIFFS.open("/");    /* Ouverture de la racine */
+    File file = root.openNextFile(); /* Ouverture du 1er fichier */
+    while (file)                     /* Boucle de test de présence des fichiers - Si plus de fichiers la boucle s'arrête*/
+
+    {
+        Serial.print("File: ");
+        Serial.println(file.name());
+        file.close();
+        file = root.openNextFile(); /* Lecture du fichier suivant */
+    }
+
+// Configuration des évènements web server
     ws.onEvent(onWsEvent);
     server.addHandler(&ws);
 
@@ -268,4 +287,5 @@ void loop()
 {
     ArduinoOTA.handle();
     ws.cleanupClients();
+    
 }

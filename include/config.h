@@ -5,7 +5,7 @@
 #include <freertos/task.h>
 #include <freertos/timers.h>
 
-#define DEBUG
+//#define DEBUG
 
 //#include <RTClib.h>
 #ifndef CONFIG_H
