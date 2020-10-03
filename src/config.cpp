@@ -16,7 +16,6 @@
 #include <NtpClient.h>
 
 #include <RTClib.h>
-//#include "DHTesp.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME680.h>
 #include "valeurs.h"
