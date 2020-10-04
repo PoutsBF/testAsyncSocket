@@ -35,8 +35,8 @@ public:
 private:
     float temperature;
     float humidite;
-    float pression;
-    float gas_resist;
+    uint32_t pression;
+    uint32_t gas_resist;
     char timestamp[32];
     AsyncWebSocket *ws;
 };  
