@@ -29,12 +29,14 @@ class CValeurs
 public:
     CValeurs(void);
     void setup(AsyncWebSocket *ws);
-    void miseAJour(float temperature, float humidite, char *timestamp);
+    void miseAJour(float temperature, float humidite, uint32_t pression, uint32_t gas_resist, char *timestamp);
     void envoie(uint32_t id);
 
 private:
     float temperature;
     float humidite;
+    float pression;
+    float gas_resist;
     char timestamp[32];
     AsyncWebSocket *ws;
 };  

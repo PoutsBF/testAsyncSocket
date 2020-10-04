@@ -161,7 +161,7 @@ void setup()
     ArduinoOTA.onEnd([]() { events.send("Update End", "ota"); });
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
         char p[32];
-        sprintf(p, "Progress: %u%%\n", (progress / (total / 100)));
+        sprintf(p, "Progress: %u%%\r", (progress / (total / 100)));
         events.send(p, "ota");
     });
     ArduinoOTA.onError([](ota_error_t error) {
@@ -291,12 +291,10 @@ void setup()
     Serial.println("---- Fin du setup ----");
 }
 
-void print_shit(void);
 void loop()
 {
     ArduinoOTA.handle();
     ws.cleanupClients();
-    print_shit();
 }
 
 // -- https://www.esp32.com/viewtopic.php?t=3674

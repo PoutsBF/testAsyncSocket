@@ -193,6 +193,8 @@ DBG            Serial.println(endTime);
             {
                 float mesure_t = 0.0;
                 float mesure_h = 0.0;
+                uint32_t mesure_p = 0.0;
+                uint32_t mesure_g = 0.0;
 
                 // Mise en sommeil en attendant la fin de la lecture
                 if (endTime > millis())
@@ -202,17 +204,21 @@ DBG            Serial.println(endTime);
 
                 mesure_t = bme.temperature;
                 mesure_h = bme.humidity;
+                mesure_p = bme.pressure/100;
+                mesure_g = bme.gas_resistance;
 
                 //    portENTER_CRITICAL(&mux);
                 DateTime now = rtc.now();
                 //    portEXIT_CRITICAL(&mux);
 
-                char strbuffer[64];
-                snprintf(strbuffer, 64, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f\n",
+                char strbuffer[128];
+                snprintf(strbuffer, 128, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f,%d,%d\r\n",
                          now.year(), now.month(), now.day(),
                          now.hour(), now.minute(), now.second(),
                          mesure_t,
-                         mesure_h);
+                         mesure_h,
+                         mesure_p,
+                         mesure_g);
 
                 File f = SPIFFS.open("/temperature.csv", "a+");
                 if (!f)
@@ -230,7 +236,7 @@ DBG            Serial.println(endTime);
                          now.hour(), now.minute(), now.second());
 DBG             Serial.println(strbuffer);
 
-                valeurs.miseAJour(mesure_t, mesure_h, strbuffer);
+                valeurs.miseAJour(mesure_t, mesure_h, mesure_p, mesure_g, strbuffer);
             }
             else
             {
