@@ -25,28 +25,41 @@
         <i>Stéphane Lepoutère</i>
     </div>
 
-    <div class="w3-margin w3-center w3-card w3-padding-24">
+    <div class="w3-margin w3-center w3-card w3-padding-24 jauge">
         <p id="display">Non connecté</p>
     </div>
-
-    <div class="w3-margin w3-center w3-card w3-padding-24">
-    <figure class="highcharts-figure">
-        <div id="containerVU"></div>
-        <p class="highcharts-description">
-            Température et hygrométrie.
-        </p>
-    </figure>
+<div class="histo"></div>
+<div style="display:inline-block;" class="w3-margin w3-center w3-card w3-padding-24">
+    <div class="jauge">
+        <figure class="highcharts-figure">
+            <div id="containerTEMP"></div>
+        </figure>
     </div>
+
+    <div class="jauge">
+        <figure class="highcharts-figure">
+            <div id="containerHR"></div>
+        </figure>
+    </div>
+    <div class="jauge">
+        <figure class="highcharts-figure">
+            <div id="containerPRESSION"></div>
+        </figure>
+    </div>
+    <div class="jauge">
+        <figure class="highcharts-figure">
+            <div id="containerGAZ"></div>
+        </figure>
+    </div>
+</div>
+
+    <div class="histo"></div>
 
     <div class="w3-margin w3-center w3-card w3-padding-24">
         <figure class="highcharts-figure">
             <div id="container"></div>
-            <p class="highcharts-description">
-                Relevés de température.
-            </p>
         </figure>
     </div>
-
     <!-- Les boutons ON / OFF -->
     
     <div class="w3-margin w3-center w3-card w3-padding-24">

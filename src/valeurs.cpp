@@ -40,7 +40,7 @@ void CValeurs::envoie(uint32_t id)
 {
     // Envoyer les données sur le websocket
     char strbuffer[128];
-    snprintf(strbuffer, 128, "{\"stamp\":\"%s\",\"temp\":%.2f,\"hydr\":%.2f,\"pression\":%u,\"gas_r\":%u}",
+    snprintf(strbuffer, 128, "{\"stamp\":\"%s\",\"temp\":%.2f,\"hydr\":%.2f,\"pression\":%d,\"gas_r\":%d}",
              timestamp,
              temperature,
              humidite,

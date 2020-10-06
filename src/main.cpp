@@ -213,6 +213,9 @@ void setup()
     server.on("/heap", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->send(200, "text/plain", String(ESP.getFreeHeap()));
     });
+//    server.on("/temperature.csv", HTTP_GET, [](AsyncWebServerRequest *request) {
+//        request->send(SPIFFS, "/temperature.csv", "text/plain");
+//    });
 
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm");
 

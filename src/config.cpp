@@ -212,7 +212,7 @@ DBG            Serial.println(endTime);
                 //    portEXIT_CRITICAL(&mux);
 
                 char strbuffer[128];
-                snprintf(strbuffer, 128, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f,%ud,%ud\r\n",
+                snprintf(strbuffer, 128, "%04d-%02d-%02dT%02d:%02d:%02d,%.2f,%.2f,%d,%d\r\n",
                          now.year(), now.month(), now.day(),
                          now.hour(), now.minute(), now.second(),
                          mesure_t,
