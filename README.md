@@ -17,6 +17,10 @@ Les sujets sont :
 ## sources
 A compléter
 FreeRTOS ; Adafruit pour le BME680 ; ESPHome pour la gestion web asynchrone ; ...
+###Gestion web server asynchrone :
+<https://github.com/me-no-dev>
+###BME680 :
+<https://github.com/adafruit/Adafruit_BME680>
 
 # Résultats
 A compléter...
