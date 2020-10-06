@@ -22,3 +22,6 @@ FreeRTOS ; Adafruit pour le BME680 ; ESPHome pour la gestion web asynchrone ; ..
 A compléter...
 
 ![entete](documentation/screen1.PNG?raw=true "entête")
+![jauges](documentation/screen2.PNG?raw=true "jauges")
+![graphiques](documentation/screen3.PNG?raw=true "graphiques")
+![base](documentation/screen4.PNG?raw=true "base")
