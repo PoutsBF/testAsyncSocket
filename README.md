@@ -24,6 +24,9 @@ FreeRTOS ; Adafruit pour le BME680 ; ESPHome pour la gestion web asynchrone ; ..
 ### BME680 :
 <https://github.com/adafruit/Adafruit_BME680>
 
+### RTC
+<https://github.com/adafruit/RTClib>
+
 # Résultats
 A compléter...
 
