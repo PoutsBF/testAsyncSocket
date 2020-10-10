@@ -1,5 +1,6 @@
-# testAsyncSocket
-Description à compléter !
+# PempEranda
+PempEranda, c'est Température Véranda, contracté en TempÉranda... Mais avec une faute de frappe, c'est devenu PempÉranda... Le 'P' est loin du 'T' ? Allez comprendre...
+2020-09-05 - Création du projet.
 
 ## objectif
 L'objectif de ce projet est de servir de 'bac à sable' pour prendre en main divers sujets listés ci-dessous. Le support de cet objectif est un objet mesurant la température et l'humidité de la véranda pour maitriser la situation et définir des améliorations, modification, ou RAZ de la susdite véranda...
@@ -17,6 +18,9 @@ Les sujets sont :
 ## sources
 A compléter
 FreeRTOS ; Adafruit pour le BME680 ; ESPHome pour la gestion web asynchrone ; ...
+
+### FreeRTOS
+<http://www.FreeRTOS.org/>
 
 ### Gestion web server asynchrone :
 <https://github.com/me-no-dev>
