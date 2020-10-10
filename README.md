@@ -1,5 +1,5 @@
 # PempEranda
-PempEranda, c'est Température Véranda, contracté en TempÉranda... Mais avec une faute de frappe, c'est devenu PempÉranda... Le 'P' est loin du 'T' ? Allez comprendre...
+PempEranda, c'est Température Véranda, contracté en TempÉranda... Mais avec une faute de frappe, c'est devenu PempÉranda... Le 'P' est loin du 'T' ? Allez comprendre... 
 2020-09-05 - Création du projet.
 
 ## objectif
