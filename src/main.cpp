@@ -213,9 +213,6 @@ void setup()
     server.on("/heap", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->send(200, "text/plain", String(ESP.getFreeHeap()));
     });
-//    server.on("/temperature.csv", HTTP_GET, [](AsyncWebServerRequest *request) {
-//        request->send(SPIFFS, "/temperature.csv", "text/plain");
-//    });
 
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm");
 
@@ -294,13 +291,17 @@ void setup()
     Serial.println("---- Fin du setup ----");
 }
 
-void loop()
+//void print_shit(void);
+
+ void loop()
 {
     ArduinoOTA.handle();
     ws.cleanupClients();
+//    delay(5000);
+//    print_shit();
 }
 
-// -- https://www.esp32.com/viewtopic.php?t=3674
+// // -- https://www.esp32.com/viewtopic.php?t=3674
 // void print_shit(void)
 // {
 //     char *str = (char *)malloc(sizeof(char) * 2000);
