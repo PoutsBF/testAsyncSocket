@@ -1,0 +1,15 @@
+{
+  "name": "dataStore",
+  "keywords": "file, spiffs",
+  "description": "Gestion du fichier de suivi de données",
+  "authors":
+  [
+    {
+      "name": "Stéphane Lepoutère",
+      "email": "lepouteres@live.com"
+    }    
+  ],
+  "version": "0.0.0",
+  "frameworks": "arduino",
+  "platforms": "espressif"
+}
